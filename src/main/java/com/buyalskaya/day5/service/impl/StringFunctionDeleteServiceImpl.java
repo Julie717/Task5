@@ -53,7 +53,6 @@ public class StringFunctionDeleteServiceImpl implements DeleteStringService {
                     if ((i - startPosition) == wordLength &&
                             (resultString.charAt(startPosition) == lowerLetter ||
                                     resultString.charAt(startPosition) == upperLetter)) {
-
                         resultString.delete(startPosition, startPosition + wordLength);
                         startPosition = startPosition + 1;
                         i = i - wordLength;
