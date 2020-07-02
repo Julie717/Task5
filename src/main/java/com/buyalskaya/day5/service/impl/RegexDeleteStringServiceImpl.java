@@ -21,8 +21,7 @@ public class RegexDeleteStringServiceImpl implements DeleteStringService {
         if (inputString == null) {
             throw new ProjectException("Input string is null");
         }
-        String regexExpression = REGEX_NOT_LETTER_SPACE;
-        return inputString.replaceAll(regexExpression, REGEX_SPACE);
+        return inputString.replaceAll(REGEX_NOT_LETTER_SPACE, REGEX_SPACE);
     }
 
     @Override
