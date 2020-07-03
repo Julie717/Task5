@@ -8,5 +8,6 @@ public interface ReplaceStringService {
     String replaceLetterAfterSuitableLetter(String inputString, char letterAfterWhichReplacement,
                                             char replaceableLetter, char newLetter) throws ProjectException;
 
-    String replaceWordSuitableLength(String inputString, int wordLength, String newSubstring) throws ProjectException;
+    String replaceWordSuitableLength(String inputString, int wordLength,
+                                     String newSubstring) throws ProjectException;
 }

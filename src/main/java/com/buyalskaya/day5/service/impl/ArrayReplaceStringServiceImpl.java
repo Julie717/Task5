@@ -12,12 +12,10 @@ public class ArrayReplaceStringServiceImpl implements ReplaceStringService {
 
     @Override
     public String replaceSymbol(String inputString, char symbol, int position) throws ProjectException {
-        if (inputString == null || inputString == "") {
-            throw new ProjectException("Input string is empty");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, position)) {
-            throw new ProjectException("Position is incorrect");
+        if (inputString == null || inputString.equals("") ||
+                !dataValidator.isFitInString(inputString, position)) {
+            throw new ProjectException("Input data is incorrect");
         }
         int startPosition = 0;
         int inputStringLength = inputString.length();
@@ -46,14 +44,12 @@ public class ArrayReplaceStringServiceImpl implements ReplaceStringService {
     public String replaceLetterAfterSuitableLetter(String inputString,
                                                    char letterAfterWhichReplacement, char replaceableLetter,
                                                    char newLetter) throws ProjectException {
-        if (inputString == null) {
-            throw new ProjectException("Input string is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isLetter(letterAfterWhichReplacement) ||
+        if (inputString == null ||
+                !dataValidator.isLetter(letterAfterWhichReplacement) ||
                 !dataValidator.isLetter(replaceableLetter) ||
                 !dataValidator.isLetter(newLetter)) {
-            throw new ProjectException("Incorrect input symbols: they must be letters.");
+            throw new ProjectException("Input data is incorrect");
         }
         int inputStringLength = inputString.length();
         char lowerLetterAfterWhichReplacement = Character.toLowerCase(letterAfterWhichReplacement);
@@ -83,12 +79,10 @@ public class ArrayReplaceStringServiceImpl implements ReplaceStringService {
     @Override
     public String replaceWordSuitableLength(String inputString, int wordLength, String newSubstring)
             throws ProjectException {
-        if (inputString == null || newSubstring == null) {
-            throw new ProjectException("String is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, wordLength)) {
-            throw new ProjectException("Length of word is incorrect");
+        if (inputString == null || newSubstring == null ||
+                !dataValidator.isFitInString(inputString, wordLength)) {
+            throw new ProjectException("Input data is incorrect");
         }
         int startPosition = 0;
         int lengthNewWord = newSubstring.length();

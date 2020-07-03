@@ -12,19 +12,14 @@ public class RegexReplaceStringServiceImpl implements ReplaceStringService {
     public static final String REGEX_REPLACEMENT = "$1%c$3";
     public static final String REGEX_REPLACE_LETTER = "([%c%c])(%c)";
     public static final String REGEX_REPLACEMENT_AFTER = "$1%c";
-    public static final String REGEX_WORD = "(?<=[\\p{Punct}\\s\\d&&[^-]])([\\pL-]{%d})(?=[\\p{Punct}\\s\\d&&[^-]])";
-    //TODO It's impossible to use \\b like a word's border because word "кое-как" is separated into 2 words,
-    // but in the task it must be one word. Thus, here was added a check of previous and next symbol
-    public static final String REGEX_LAST_WORD = "(?<=[\\p{Punct}\\s\\d&&[^-]])([\\pL-]{%d})$";
+    public static final String REGEX_WORD = "\\b[\\pL-]{%d}\\b";
 
     @Override
     public String replaceSymbol(String inputString, char symbol, int position) throws ProjectException {
-        if (inputString == null || inputString == "") {
-            throw new ProjectException("Input string is empty");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, position)) {
-            throw new ProjectException("Position is incorrect");
+        if (inputString == null || inputString.equals("") ||
+                !dataValidator.isFitInString(inputString, position)) {
+            throw new ProjectException("Input data is incorrect");
         }
         int previousPosition = position - 1;
         String regexWord = String.format(REGEX_REPLACE_SYMBOL, previousPosition);
@@ -37,14 +32,12 @@ public class RegexReplaceStringServiceImpl implements ReplaceStringService {
     public String replaceLetterAfterSuitableLetter(String inputString,
                                                    char letterAfterWhichReplacement, char replaceableLetter,
                                                    char newLetter) throws ProjectException {
-        if (inputString == null) {
-            throw new ProjectException("Input string is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isLetter(letterAfterWhichReplacement) ||
+        if (inputString == null ||
+                !dataValidator.isLetter(letterAfterWhichReplacement) ||
                 !dataValidator.isLetter(replaceableLetter) ||
                 !dataValidator.isLetter(newLetter)) {
-            throw new ProjectException("Incorrect input symbols: they must be letters.");
+            throw new ProjectException("Input data is incorrect");
         }
         char lowerSymbolAfterWhichReplacement = Character.toLowerCase(letterAfterWhichReplacement);
         char upperSymbolAfterWhichReplacement = Character.toUpperCase(letterAfterWhichReplacement);
@@ -68,20 +61,12 @@ public class RegexReplaceStringServiceImpl implements ReplaceStringService {
     @Override
     public String replaceWordSuitableLength(String inputString, int wordLength, String newSubstring)
             throws ProjectException {
-        if (inputString == null || newSubstring == null) {
-            throw new ProjectException("String is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, wordLength)) {
-            throw new ProjectException("Length of word is incorrect");
+        if (inputString == null || newSubstring == null ||
+                !dataValidator.isFitInString(inputString, wordLength)) {
+            throw new ProjectException("Input data is incorrect");
         }
         String regexExpression = String.format(REGEX_WORD, wordLength);
-        Pattern pattern = Pattern.compile(regexExpression);
-        Matcher matcher = pattern.matcher(inputString);
-        String newString = matcher.replaceAll(newSubstring);
-        regexExpression = String.format(REGEX_LAST_WORD, wordLength);
-        pattern = Pattern.compile(regexExpression);
-        matcher = pattern.matcher(newString);
-        return matcher.replaceAll(newSubstring);
+        return inputString.replaceAll(regexExpression, newSubstring);
     }
 }

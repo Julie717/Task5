@@ -15,7 +15,8 @@ public class RegexDeleteStringServiceImplTest {
         regexDeleteStringService = new RegexDeleteStringServiceImpl();
     }
 
-    @Test(dataProvider = "dataForDeleteNotLetterExceptSpace", dataProviderClass = DataProviderClassDelete.class)
+    @Test(dataProvider = "dataForDeleteNotLetterExceptSpace",
+            dataProviderClass = DataProviderClassDelete.class)
     public void deleteNotLetterExceptSpaceTestParams(String inputString, String expected) {
         try {
             String actual = regexDeleteStringService.deleteNotLetterExceptSpace(inputString);
@@ -32,10 +33,12 @@ public class RegexDeleteStringServiceImplTest {
                 () -> regexDeleteStringService.deleteNotLetterExceptSpace(inputString));
     }
 
-    @Test(dataProvider = "dataForDeleteWords", dataProviderClass = DataProviderClassDelete.class)
-    public void deleteWordsTestParams(String inputString, int wordLength, char startLetter, String expected) {
+    @Test(dataProvider = "dataForDeleteWordsStartedConsonant",
+            dataProviderClass = DataProviderClassDelete.class)
+    public void deleteWordsStartedConsonantTestParams
+            (String inputString, int wordLength, String expected) {
         try {
-            String actual = regexDeleteStringService.deleteWords(inputString, wordLength, startLetter);
+            String actual = regexDeleteStringService.deleteWordsStartedConsonant(inputString, wordLength);
             assertEquals(actual, expected);
         } catch (ProjectException ex) {
             fail("Input string is null");
@@ -43,44 +46,37 @@ public class RegexDeleteStringServiceImplTest {
     }
 
     @Test
-    public void deleteWordsNull() {
+    public void deleteWordsStartedConsonantNull() {
         String inputString = null;
         assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, 2, 'r'));
+                () -> regexDeleteStringService.deleteWordsStartedConsonant(inputString, 2));
     }
 
     @Test
-    public void deleteWordsNegativeWordLength() {
+    public void deleteWordsStartedConsonantNegativeWordLength() {
         String inputString = "November and December as they do in the other 10 months of the year.";
         assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, -2, 'r'));
+                () -> regexDeleteStringService.deleteWordsStartedConsonant(inputString, -2));
     }
 
     @Test
-    public void deleteWordsWordLengthGreaterThanInputString() {
+    public void deleteWordsStartedConsonantWordLengthGreaterThanInputString() {
         String inputString = "November and December";
         assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, 45, 'r'));
+                () -> regexDeleteStringService.deleteWordsStartedConsonant(inputString, 45));
     }
 
     @Test
-    public void deleteWordsWordLengthZero() {
+    public void deleteWordsStartedConsonantWordLengthZero() {
         String inputString = "";
         assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, 0, 'r'));
+                () -> regexDeleteStringService.deleteWordsStartedConsonant(inputString, 0));
     }
 
     @Test
-    public void deleteWordsWordIncorrectStartLetter() {
-        String inputString = "November and December";
-        assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, 3, '*'));
-    }
-
-    @Test
-    public void deleteWordsInputStringNull() {
+    public void deleteWordsStartedConsonantInputStringNull() {
         String inputString = null;
         assertThrows(ProjectException.class,
-                () -> regexDeleteStringService.deleteWords(inputString, 2, 'r'));
+                () -> regexDeleteStringService.deleteWordsStartedConsonant(inputString, 2));
     }
 }

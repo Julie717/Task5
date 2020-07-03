@@ -5,7 +5,7 @@ import org.testng.annotations.DataProvider;
 public class DataProviderClassReplace {
 
     @DataProvider(name = "dataForReplaceSymbol")
-    public static final Object[][] dataForReplaceSymbol() {
+    public static Object[][] dataForReplaceSymbol() {
         return new Object[][]{
                 {"Shut up, Tara! Hey look, here they come!", '*', 3, "Sh*t up, Ta*a! He* lo*k, he*e th*y co*e!"},
                 {"1+1=2", '*', 3, "1+1=2"},
@@ -15,7 +15,7 @@ public class DataProviderClassReplace {
     }
 
     @DataProvider(name = "dataForReplaceLetterAfterSuitableLetter")
-    public static final Object[][] dataForReplaceLetterAfterSuitableLetter() {
+    public static Object[][] dataForReplaceLetterAfterSuitableLetter() {
         return new Object[][]{
                 {"The palice soon tied up the contents of the dead." +
                         "She could pasitively identify the body." +
@@ -30,7 +30,7 @@ public class DataProviderClassReplace {
     }
 
     @DataProvider(name = "dataForReplaceWordSuitableLength")
-    public static final Object[][] dataForReplaceWordSuitableLength() {
+    public static Object[][] dataForReplaceWordSuitableLength() {
         return new Object[][]{
                 {"There were doors all round the hall, but they were all locked.", 4, "New substring",
                         "There New substring doors all round the New substring, " +
@@ -39,7 +39,7 @@ public class DataProviderClassReplace {
                         "но только небольшая тучка брызнула на пыль дороги " +
                         "и на сочные листья", 6, "ДА",
                         "Целый день был ДА, ДА собиралась гроза, " +
-                                "но ДА небольшая тучка брызнула на пыль ДА "+
+                                "но ДА небольшая тучка брызнула на пыль ДА " +
                                 "и на ДА ДА"}
         };
     }

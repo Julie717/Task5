@@ -5,55 +5,42 @@ import com.buyalskaya.day5.service.ReplaceStringService;
 import com.buyalskaya.day5.validator.DataValidator;
 
 public class StringFunctionReplaceServiceImpl implements ReplaceStringService {
-    public static final String SPACE = " \t\n\r";
-    public static final String PUNCT = "!\"#$%&'()*+,./:;<=>?@[\\]^_`{|}~";
-    public static final String DIGIT = "0123456789";
-    public static final String SEPARATOR = SPACE + PUNCT + DIGIT;
+    public static final String WORD_BORDER = "\\b(?!-)(?<!-)";
 
     @Override
     public String replaceSymbol(String inputString, char symbol, int position) throws ProjectException {
-        if (inputString == null || inputString == "") {
-            throw new ProjectException("Input string is empty");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, position)) {
-            throw new ProjectException("Position is incorrect");
+        if (inputString == null || inputString.equals("") ||
+                !dataValidator.isFitInString(inputString, position)) {
+            throw new ProjectException("Input data is incorrect");
         }
-        int startPosition = 0;
-        int inputStringLength = inputString.length();
-        int separatorLength = SEPARATOR.length();
-        for (int i = 0; i < inputStringLength; i++) {
-            for (int j = 0; j < separatorLength; j++) {
-                if (inputString.charAt(i) == SEPARATOR.charAt(j)) {
-                    inputString = replaceSymbolInWord(inputString, startPosition, i - 1, symbol, position);
-                    startPosition = i + 1;
-                }
-            }
+        StringBuilder resultString = new StringBuilder();
+        String[] words = inputString.split(WORD_BORDER);
+        for (String word : words) {
+            resultString.append(replaceSymbolInWord(word, position, symbol));
         }
-        return replaceSymbolInWord(inputString, startPosition, inputStringLength - 1, symbol, position);
+        return resultString.toString();
     }
 
-    private String replaceSymbolInWord(String inputString, int startWordPosition, int endWordPosition,
-                                       char symbol, int replaceablePosition) {
-        if (endWordPosition - startWordPosition + 1 >= replaceablePosition) {
-            inputString = inputString.substring(0, startWordPosition + replaceablePosition - 1) + symbol +
-                    inputString.substring(startWordPosition + replaceablePosition);
+    private String replaceSymbolInWord(String word, int position, char symbol) {
+        DataValidator dataValidator = new DataValidator();
+        char firstLetter = word.charAt(0);
+        if (word.length() >= position && dataValidator.isLetter(firstLetter)) {
+            word = word.substring(0, position - 1) + symbol + word.substring(position);
         }
-        return inputString;
+        return word;
     }
 
     @Override
     public String replaceLetterAfterSuitableLetter(String inputString,
                                                    char letterAfterWhichReplacement, char replaceableLetter,
                                                    char newLetter) throws ProjectException {
-        if (inputString == null) {
-            throw new ProjectException("Input string is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isLetter(letterAfterWhichReplacement) ||
+        if (inputString == null ||
+                !dataValidator.isLetter(letterAfterWhichReplacement) ||
                 !dataValidator.isLetter(replaceableLetter) ||
                 !dataValidator.isLetter(newLetter)) {
-            throw new ProjectException("Incorrect input symbols: they must be letters.");
+            throw new ProjectException("Input data is incorrect");
         }
         char lowerSymbolAfterWhichReplacement = Character.toLowerCase(letterAfterWhichReplacement);
         char upperSymbolAfterWhichReplacement = Character.toUpperCase(letterAfterWhichReplacement);
@@ -62,14 +49,19 @@ public class StringFunctionReplaceServiceImpl implements ReplaceStringService {
         char lowerNewSymbol = Character.toLowerCase(newLetter);
         char upperNewSymbol = Character.toUpperCase(newLetter);
         StringBuilder resultString = new StringBuilder(inputString);
-        replaceLetter(inputString, resultString, lowerSymbolAfterWhichReplacement, lowerReplaceableSymbol, lowerNewSymbol);
-        replaceLetter(inputString, resultString, upperSymbolAfterWhichReplacement, upperReplaceableSymbol, upperNewSymbol);
-        replaceLetter(inputString, resultString, lowerSymbolAfterWhichReplacement, upperReplaceableSymbol, upperNewSymbol);
-        replaceLetter(inputString, resultString, upperSymbolAfterWhichReplacement, lowerReplaceableSymbol, lowerNewSymbol);
+        replaceLetter(inputString, resultString, lowerSymbolAfterWhichReplacement,
+                lowerReplaceableSymbol, lowerNewSymbol);
+        replaceLetter(inputString, resultString, upperSymbolAfterWhichReplacement,
+                upperReplaceableSymbol, upperNewSymbol);
+        replaceLetter(inputString, resultString, lowerSymbolAfterWhichReplacement,
+                upperReplaceableSymbol, upperNewSymbol);
+        replaceLetter(inputString, resultString, upperSymbolAfterWhichReplacement,
+                lowerReplaceableSymbol, lowerNewSymbol);
         return resultString.toString();
     }
 
-    private void replaceLetter(String inputString, StringBuilder resultString, char letter, char replaceableSymbol, char newSymbol) {
+    private void replaceLetter(String inputString, StringBuilder resultString,
+                               char letter, char replaceableSymbol, char newSymbol) {
         int index = inputString.indexOf(letter);
         int inputStringLength = inputString.length();
         while ((index != -1) && (index + 1 < inputStringLength)) {
@@ -83,39 +75,21 @@ public class StringFunctionReplaceServiceImpl implements ReplaceStringService {
     @Override
     public String replaceWordSuitableLength(String inputString, int wordLength, String newSubstring)
             throws ProjectException {
-        if (inputString == null || newSubstring == null) {
-            throw new ProjectException("String is null");
-        }
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, wordLength)) {
-            throw new ProjectException("Length of word is incorrect");
+        if (inputString == null || newSubstring == null ||
+                !dataValidator.isFitInString(inputString, wordLength)) {
+            throw new ProjectException("Input data is incorrect");
         }
-        int startPosition = 0;
-        int lengthNewWord = newSubstring.length();
-        int separatorLength = SEPARATOR.length();
-        int i = 0;
-        while (i < inputString.length()) {
-            for (int j = 0; j < separatorLength; j++) {
-                if (inputString.charAt(i) == SEPARATOR.charAt(j)) {
-                    if (wordLength == (i - startPosition)) {
-                        inputString = replaceWord(inputString, startPosition, i, newSubstring);
-                        i = startPosition + lengthNewWord;
-                    }
-                    startPosition = i + 1;
-                }
+        StringBuilder resultString = new StringBuilder();
+        String[] words = inputString.split(WORD_BORDER);
+        for (String word : words) {
+            char firstLetter = word.charAt(0);
+            if (word.length() == wordLength && dataValidator.isLetter(firstLetter)) {
+                resultString.append(newSubstring);
+            } else {
+                resultString.append(word);
             }
-            i++;
         }
-        if (inputString.length() - startPosition == wordLength) {
-            inputString = replaceWord(inputString, startPosition, inputString.length(), newSubstring);
-        }
-        return inputString;
-    }
-
-    private String replaceWord(String inputString, int startWordPosition, int endWordPosition,
-                               String newWord) {
-        inputString = inputString.substring(0, startWordPosition) + newWord +
-                inputString.substring(endWordPosition);
-        return inputString;
+        return resultString.toString();
     }
 }

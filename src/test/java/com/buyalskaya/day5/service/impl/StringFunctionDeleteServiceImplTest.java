@@ -32,10 +32,12 @@ public class StringFunctionDeleteServiceImplTest {
                 () -> stringFunctionDeleteService.deleteNotLetterExceptSpace(inputString));
     }
 
-    @Test(dataProvider = "dataForDeleteWords", dataProviderClass = DataProviderClassDelete.class)
-    public void deleteWordsTestParams(String inputString, int wordLength, char startLetter, String expected) {
+    @Test(dataProvider = "dataForDeleteWordsStartedConsonant",
+            dataProviderClass = DataProviderClassDelete.class)
+    public void deleteWordsStartedConsonantTestParams
+            (String inputString, int wordLength, String expected) {
         try {
-            String actual = stringFunctionDeleteService.deleteWords(inputString, wordLength, startLetter);
+            String actual = stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, wordLength);
             assertEquals(actual, expected);
         } catch (ProjectException ex) {
             fail("Input string is null");
@@ -43,44 +45,37 @@ public class StringFunctionDeleteServiceImplTest {
     }
 
     @Test
-    public void deleteWordsNull() {
+    public void deleteWordsStartedConsonantNull() {
         String inputString = null;
         assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, 2, 'r'));
+                () -> stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, 2));
     }
 
     @Test
-    public void deleteWordsNegativeWordLength() {
+    public void deleteWordsStartedConsonantNegativeWordLength() {
         String inputString = "November and December as they do in the other 10 months of the year.";
         assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, -2, 'r'));
+                () -> stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, -2));
     }
 
     @Test
-    public void deleteWordsWordLengthGreaterThanInputString() {
+    public void deleteWordsStartedConsonantWordLengthGreaterThanInputString() {
         String inputString = "November and December";
         assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, 45, 'r'));
+                () -> stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, 45));
     }
 
     @Test
-    public void deleteWordsWordLengthZero() {
+    public void deleteWordsStartedConsonantWordLengthZero() {
         String inputString = "";
         assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, 0, 'r'));
+                () -> stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, 0));
     }
 
     @Test
-    public void deleteWordsWordIncorrectStartLetter() {
-        String inputString = "November and December";
-        assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, 3, '*'));
-    }
-
-    @Test
-    public void deleteWordsInputStringNull() {
+    public void deleteWordsStartedConsonantInputStringNull() {
         String inputString = null;
         assertThrows(ProjectException.class,
-                () -> stringFunctionDeleteService.deleteWords(inputString, 2, 'r'));
+                () -> stringFunctionDeleteService.deleteWordsStartedConsonant(inputString, 2));
     }
 }

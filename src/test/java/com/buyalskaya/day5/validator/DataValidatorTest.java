@@ -34,26 +34,6 @@ public class DataValidatorTest {
         assertEquals(actual, expected);
     }
 
-    @DataProvider(name = "dataForIsWord")
-    public Object[][] dataForIsWord() {
-        return new Object[][]{
-                {"Hello", true},
-                {"привет", true},
-                {"кое-как", true},
-                {"a", true},
-                {"Привет  ", false},
-                {"hello.", false},
-                {"-", false},
-                {"1", false}
-        };
-    }
-
-    @Test(dataProvider = "dataForIsWord")
-    public void isWordTestParams(String word, boolean expected) {
-        boolean actual = dataValidator.isWord(word);
-        assertEquals(actual, expected);
-    }
-
     @DataProvider(name = "dataForIsFitInString")
     public Object[][] dataForIsFitInString() {
         return new Object[][]{

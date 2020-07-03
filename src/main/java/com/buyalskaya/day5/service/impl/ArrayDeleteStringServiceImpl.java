@@ -13,11 +13,13 @@ public class ArrayDeleteStringServiceImpl implements DeleteStringService {
     public static final String DIGIT = "0123456789";
     public static final String SEPARATOR = SYMBOL_SPACE + PUNCT + DIGIT;
     public static final String ALL_SEPARATOR = ALL_SPACE + PUNCT_WITHOUT_DASH + DIGIT;
+    public static final String CONSONANT = "bBcCdDfFgGhHjJkKlLmMnNpPqQrRsStTvVwWxXzZ" +
+            "бБвВгГдДжЖзЗйЙкКлЛмМнНпПрРсСтТфФхХцЦчЧшШщЩъЪьЬ";
 
     @Override
     public String deleteNotLetterExceptSpace(String inputString) throws ProjectException {
         if (inputString == null) {
-            throw new ProjectException("Input string is null");
+            throw new ProjectException("Input data is incorrect");
         }
         int inputStringLength = inputString.length();
         int separatorLength = SEPARATOR.length();
@@ -33,20 +35,12 @@ public class ArrayDeleteStringServiceImpl implements DeleteStringService {
     }
 
     @Override
-    public String deleteWords(String inputString, int wordLength, char startLetter) throws ProjectException {
-        if (inputString == null) {
-            throw new ProjectException("Input string is null");
-        }
+    public String deleteWordsStartedConsonant(String inputString, int wordLength) throws ProjectException {
         DataValidator dataValidator = new DataValidator();
-        if (!dataValidator.isFitInString(inputString, wordLength)) {
-            throw new ProjectException("Word length is incorrect");
-        }
-        if (!dataValidator.isLetter(startLetter)) {
-            throw new ProjectException("The word must start from letter");
+        if (inputString == null || !dataValidator.isFitInString(inputString, wordLength)) {
+            throw new ProjectException("Input data is incorrect");
         }
         int startPosition = 0;
-        char lowerLetter = Character.toLowerCase(startLetter);
-        char upperLetter = Character.toUpperCase(startLetter);
         int separatorLength = ALL_SEPARATOR.length();
         char[] arrayChar = inputString.toCharArray();
         int i = 0;
@@ -54,7 +48,7 @@ public class ArrayDeleteStringServiceImpl implements DeleteStringService {
             for (int j = 0; j < separatorLength; j++) {
                 if (arrayChar[i] == ALL_SEPARATOR.charAt(j)) {
                     if ((i - startPosition) == wordLength &&
-                            (arrayChar[startPosition] == lowerLetter || arrayChar[startPosition] == upperLetter)) {
+                            (isConsonant(arrayChar[startPosition]))) {
                         arrayChar = deleteOneWord(arrayChar, startPosition, wordLength);
                         startPosition = startPosition + 1;
                         i = i - wordLength;
@@ -66,10 +60,20 @@ public class ArrayDeleteStringServiceImpl implements DeleteStringService {
             i++;
         }
         if ((arrayChar.length - startPosition) == wordLength &&
-                (arrayChar[startPosition] == lowerLetter || arrayChar[startPosition] == upperLetter)) {
+                (isConsonant(arrayChar[startPosition]))) {
             arrayChar = deleteOneWord(arrayChar, startPosition, wordLength);
         }
         return new String(arrayChar);
+    }
+
+    private boolean isConsonant(char letter) {
+        int amountOfConsonant = CONSONANT.length();
+        for (int i = 0; i < amountOfConsonant; i++) {
+            if (letter == CONSONANT.charAt(i)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private char[] deleteOneWord(char[] arrayChar, int startPosition, int wordLength) {
